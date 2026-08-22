@@ -7,6 +7,13 @@ export class SpecNotFoundError extends Error {
   }
 }
 
+export class SpecOutsideProjectError extends Error {
+  constructor(spec: string) {
+    super(`Spec path resolves outside the project directory: ${spec}`);
+    this.name = "SpecOutsideProjectError";
+  }
+}
+
 export class ProjectNotFoundError extends Error {
   constructor(path: string) {
     super(`Project path does not exist: ${path}`);
@@ -31,6 +38,7 @@ export class CypressRunError extends Error {
 export function handleToolError(err: unknown, action: string) {
   const isUserError =
     err instanceof SpecNotFoundError ||
+    err instanceof SpecOutsideProjectError ||
     err instanceof ProjectNotFoundError ||
     err instanceof DevServerNotRunningError;
 

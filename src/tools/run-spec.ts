@@ -1,10 +1,10 @@
 import { z } from "zod";
 import { existsSync } from "node:fs";
-import { resolve } from "node:path";
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { runCypress } from "../cypress/runner.js";
 import { saveResults } from "../cypress/results-store.js";
 import { SpecNotFoundError, handleToolError } from "../utils/errors.js";
+import { resolveWithinProject } from "../utils/paths.js";
 import { formatSummary } from "./format.js";
 
 export function registerRunSpec(server: McpServer, projectPath: string): void {
@@ -25,7 +25,7 @@ export function registerRunSpec(server: McpServer, projectPath: string): void {
     },
     async ({ spec, browser, headed }) => {
       try {
-        const specPath = resolve(projectPath, spec);
+        const specPath = resolveWithinProject(projectPath, spec);
         if (!existsSync(specPath)) {
           throw new SpecNotFoundError(spec);
         }
