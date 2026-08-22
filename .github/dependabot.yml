@@ -1,0 +1,17 @@
+version: 2
+updates:
+  # No target-branch: Dependabot follows the repo's default branch, which is
+  # master here. Naming it explicitly would only break on a future rename.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly
+    groups:
+      actions:
+        patterns: ["*"]

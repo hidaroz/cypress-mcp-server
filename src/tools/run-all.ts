@@ -3,6 +3,7 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { runCypress } from "../cypress/runner.js";
 import { saveResults } from "../cypress/results-store.js";
 import { handleToolError } from "../utils/errors.js";
+import { resolveWithinProject } from "../utils/paths.js";
 import { formatSummary } from "./format.js";
 
 export function registerRunAll(server: McpServer, projectPath: string): void {
@@ -25,9 +26,16 @@ export function registerRunAll(server: McpServer, projectPath: string): void {
     },
     async ({ specPattern, browser }) => {
       try {
+        // Cypress accepts an absolute path or glob here, so the pattern needs
+        // the same containment check as run_spec's explicit spec path.
+        const spec =
+          specPattern === undefined
+            ? undefined
+            : resolveWithinProject(projectPath, specPattern);
+
         const summary = await runCypress({
           projectPath,
-          spec: specPattern,
+          spec,
           browser,
         });
         saveResults(projectPath, summary);
